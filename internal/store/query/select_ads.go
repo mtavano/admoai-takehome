@@ -15,11 +15,6 @@ type SelectAdsArgs struct {
 }
 
 func SelectAds(tx store.Transaction, args *SelectAdsArgs) ([]*store.AdvertiseRecord, error) {
-	// Validate that at least one field is not empty
-	if args.ID == "" && args.Title == "" && args.Status == "" && args.Placement == "" {
-		return nil, fmt.Errorf("at least one filter field must be provided")
-	}
-
 	// Build query using squirrel
 	query := squirrel.Select("*").From("ads")
 
