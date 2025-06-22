@@ -12,5 +12,5 @@ type AdvertiseRecord struct {
 	Placement string `db:"placement" json:"placement"`
 	Status    string `db:"status" json:"status"`
 	CreatedAt int64  `db:"created_at" json:"createdAt"`
-	Ttl       *uint  `db:"ttl" json:"ttl"`
+	ExpiresAt *int64 `db:"expiresAt" json:"expires_at"`
 }
