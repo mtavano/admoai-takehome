@@ -24,6 +24,9 @@ clean:
 	@echo "[clean] Cleaning up database files..."
 	@rm -rf ./data
 
+test:
+	@export $$(cat dev.env) && go test -failfast -race -v -count=1 ./...
+
 setup:
 	@echo "[setup] Setting up the project..."
 	@go mod tidy

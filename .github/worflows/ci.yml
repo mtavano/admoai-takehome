@@ -1,0 +1,36 @@
+name: ci-test
+
+on:
+  pull_request:
+    branches: "**"
+  push:
+    branches:
+      - develop
+      - staging
+      - master
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_MIGRATIONS_DIR: ./migration
+      ENVIRONMENT: test
+      PORT: 9001
+
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.17
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: go build -v ./cmd/server/main.go
+
+      - name: Run tests
+        run: go test -p 1 -failfast -cover -race -v -count=1 ./...
+
