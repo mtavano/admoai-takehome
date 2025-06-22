@@ -222,7 +222,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Imagen</th>
+                    <th>Enlace de Imagen</th>
                     <th>Título</th>
                     <th>Ubicación</th>
                     <th>Estado</th>
@@ -237,7 +237,7 @@
                     <td>{{.ID}}</td>
                     <td>
                         {{if .ImageURL}}
-                        <img src="{{.ImageURL}}" alt="Preview" class="image-preview">
+                        <a href="{{.ImageURL}}" target="_blank" style="color: #007bff; text-decoration: none;">Ver imagen</a>
                         {{else}}
                         <span style="color: #999;">Sin imagen</span>
                         {{end}}
