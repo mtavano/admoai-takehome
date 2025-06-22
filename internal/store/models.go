@@ -12,4 +12,5 @@ type AdvertiseRecord struct {
 	Placement string `db:"placement" json:"placement"`
 	Status    string `db:"status" json:"status"`
 	CreatedAt int64  `db:"created_at" json:"createdAt"`
+	// TODO: add TTL to deactivate in cronjob
 }
