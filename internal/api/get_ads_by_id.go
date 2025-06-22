@@ -35,6 +35,8 @@ func GetAdsByIDHandler(c *gin.Context, ctx *Context) (any, int, error) {
 		}, http.StatusNotFound, nil
 	}
 
+	records[0].CalculateAndSetExpired()
+
 	// Return the first record (since we're querying by ID, there should be only one)
 	return records[0], http.StatusOK, nil
 }

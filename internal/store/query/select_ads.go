@@ -2,16 +2,18 @@ package query
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/Masterminds/squirrel"
 	"github.com/mtavano/admoai-takehome/internal/store"
 )
 
 type SelectAdsArgs struct {
-	ID        string
-	Title     string
-	Status    string
-	Placement string
+	ID              string
+	Title           string
+	Status          string
+	Placement       string
+	FilterByExpired bool
 }
 
 func SelectAds(tx store.Transaction, args *SelectAdsArgs) ([]*store.AdvertiseRecord, error) {
@@ -30,6 +32,15 @@ func SelectAds(tx store.Transaction, args *SelectAdsArgs) ([]*store.AdvertiseRec
 	}
 	if args.Placement != "" {
 		query = query.Where(squirrel.Eq{"placement": args.Placement})
+	}
+
+	// Filter out expired records
+	if args.FilterByExpired {
+		currentTimestamp := time.Now().Unix()
+		query = query.Where(squirrel.Or{
+			squirrel.Eq{"expires_at": nil},              // Records without expiration
+			squirrel.Gt{"expires_at": currentTimestamp}, // Records that haven't expired yet
+		})
 	}
 
 	// Generate SQL query with placeholders for SQLite
