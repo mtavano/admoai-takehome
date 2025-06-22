@@ -26,7 +26,7 @@ func GetAdsByFiltersHandler(c *gin.Context, ctx *Context) (any, int, error) {
 	}
 
 	// Return all records found (could be empty array)
-	return gin.H{
+	return map[string]any{
 		"ads": records,
 	}, http.StatusOK, nil
 }

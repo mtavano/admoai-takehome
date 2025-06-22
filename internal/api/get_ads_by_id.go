@@ -12,7 +12,7 @@ func GetAdsByIDHandler(c *gin.Context, ctx *Context) (any, int, error) {
 	// Get ID from path parameters
 	id := c.Param("id")
 	if id == "" {
-		return gin.H{
+		return map[string]any{
 			"error": "ID parameter is required",
 		}, http.StatusBadRequest, nil
 	}
@@ -30,7 +30,7 @@ func GetAdsByIDHandler(c *gin.Context, ctx *Context) (any, int, error) {
 
 	// Check if any records were found
 	if len(records) == 0 {
-		return gin.H{
+		return map[string]any{
 			"error": "Ad not found",
 		}, http.StatusNotFound, nil
 	}

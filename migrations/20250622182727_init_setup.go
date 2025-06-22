@@ -20,7 +20,8 @@ func upInitSetup(ctx context.Context, tx *sql.Tx) error {
 			image_url TEXT NOT NULL,
 			placement TEXT NOT NULL,
 			status TEXT NOT NULL DEFAULT 'active',
-			created_at INTEGER NOT NULL
+			created_at INTEGER NOT NULL,
+			ttl integer
 		);
 	`)
 

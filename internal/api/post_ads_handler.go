@@ -16,23 +16,24 @@ type PostAdsHandlerRequest struct {
 	Title     string `json:"title" binding:"required"`
 	ImageURL  string `json:"image_url" binding:"required,url"`
 	Placement string `json:"placement" binding:"required"`
+	Ttl       *uint  `json:"ttl"`
 }
 
 func PostAdsHandler(c *gin.Context, ctx *Context) (any, int, error) {
 	var req PostAdsHandlerRequest
-	
+
 	// Bind JSON with validation
 	if err := c.ShouldBindJSON(&req); err != nil {
-		return gin.H{
-			"error": "Validation failed",
+		return map[string]any{
+			"error":   "Validation failed",
 			"details": err.Error(),
 		}, http.StatusBadRequest, nil
 	}
 
 	// Additional custom validation for image_url
 	if _, err := url.ParseRequestURI(req.ImageURL); err != nil {
-		return gin.H{
-			"error": "Invalid image URL format",
+		return map[string]any{
+			"error":   "Invalid image URL format",
 			"details": "The image_url must be a valid URL",
 		}, http.StatusBadRequest, nil
 	}
