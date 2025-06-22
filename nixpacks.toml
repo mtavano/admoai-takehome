@@ -1,16 +1,22 @@
 [phases.setup]
-nixPkgs = ["go", "gcc", "sqlite"]
+nixPkgs = ['go', 'gcc']
 
 [phases.install]
-cmds = ["go mod download"]
+cmds = ['go mod download']
 
 [phases.build]
-cmds = ["go build -o server ./cmd/server"]
+cmds = ['go build -o admoai ./cmd/server/main.go']
 
 [start]
-cmd = "./server"
+cmd = './admoai'
 
 [variables]
-GOOS = "linux"
-GOARCH = "amd64"
-CGO_ENABLED = "1" 
+GO_ENV = 'production'
+CGO_ENABLED = '0'
+
+[deploy]
+startCommand = './admoai'
+healthcheckPath = '/health'
+healthcheckTimeout = 100
+restartPolicyType = 'on-failure'
+restartPolicyMaxRetries = 10 

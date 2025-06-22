@@ -31,6 +31,9 @@ func RegisterRoutes(ctx *Context, engine *gin.Engine) {
 	// Metrics endpoint for Prometheus
 	engine.GET("/metrics", HandleFunc(MetricsHandler, ctx))
 
+	// Dashboard HTML endpoint
+	engine.GET("/dashboard", HandleFunc(AdsDashboardHandler, ctx))
+
 	v1Router := engine.Group("/v1")
 
 	v1Router.POST("/ads", HandleFunc(PostAdsHandler, ctx))
