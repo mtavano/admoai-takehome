@@ -19,7 +19,7 @@ type AdvertiseRecord struct {
 }
 
 func (r *AdvertiseRecord) CalculateAndSetExpired() {
-	if time.Now().Unix() > *r.ExpiresAt {
+	if r.ExpiresAt != nil && time.Now().Unix() > *r.ExpiresAt {
 		r.Expired = true
 	}
 }

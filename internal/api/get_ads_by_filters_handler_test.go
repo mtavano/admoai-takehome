@@ -13,13 +13,17 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+func Test_one(t *testing.T) {
+	assert.True(t, true)
+}
+
 // Test cases for GetAdsByFiltersHandler
 type testCase struct {
 	name           string
 	queryParams    map[string]string
 	mockSetup      func(*MockDatabase)
 	expectedStatus int
-	expectedBody   map[string]interface{}
+	expectedBody   map[string]any
 	expectedError  bool
 }
 
