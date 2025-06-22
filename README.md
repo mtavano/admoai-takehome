@@ -55,6 +55,85 @@ make setup
 make run-simple
 ```
 
+## 🚀 Deployment
+
+### Coolify Deployment
+
+This project includes configuration files for easy deployment on Coolify:
+
+#### **Files Included:**
+- `nixpacks.toml` - Nixpacks configuration for Coolify
+- `Dockerfile` - Alternative Docker deployment
+- `.dockerignore` - Optimized Docker build
+- `coolify.env.example` - Environment variables template
+
+#### **Deployment Steps:**
+
+1. **Connect Repository to Coolify:**
+   - Add your Git repository to Coolify
+   - Select the main branch
+
+2. **Configure Build Settings:**
+   - **Build Pack**: Nixpacks (recommended) or Docker
+   - **Port**: 9001
+   - **Root Directory**: `/` (default)
+
+3. **Set Environment Variables:**
+```env
+ENVIRONMENT=production
+API_PORT=9001
+DB_DRIVER=sqlite3
+DB_DSN=/root/data/admoai.db
+```
+
+4. **Deploy:**
+   - Click "Deploy" in Coolify
+   - The application will build and start automatically
+
+#### **Nixpacks Configuration:**
+The `nixpacks.toml` file configures:
+- **Dependencies**: Go, GCC, SQLite
+- **Build Process**: Downloads dependencies and builds binary
+- **Runtime**: Alpine Linux with SQLite support
+- **Start Command**: `./server`
+
+#### **Docker Alternative:**
+If you prefer Docker, the `Dockerfile` provides:
+- Multi-stage build for optimized image size
+- Alpine Linux base for security
+- SQLite runtime support
+- Production-ready configuration
+
+### Environment Variables for Production
+
+Copy `coolify.env.example` and configure:
+
+```env
+# Application Configuration
+ENVIRONMENT=production
+API_PORT=9001
+
+# Database Configuration
+DB_DRIVER=sqlite3
+DB_DSN=/root/data/admoai.db
+
+# Optional: External Database
+# DB_DRIVER=postgres
+# DB_DSN=postgres://username:password@host:port/database?sslmode=disable
+
+# Logging Configuration
+LOG_LEVEL=info
+```
+
+### Health Check
+
+The application includes a health check endpoint:
+```
+GET /health
+```
+
+Configure this in Coolify for automatic health monitoring.
+
 ## 🔧 Configuration
 
 ### Environment Variables (`dev.env`)
@@ -78,34 +157,31 @@ http://localhost:9001/v1
 Creates a new ad with optional TTL.
 
 **Request Body:**
-
 ```json
 {
-"title": "Test Ad",
-"image_url": "https://example.com/image.jpg",
-"placement": "homepage",
-"ttl": 30
+  "title": "Test Ad",
+  "image_url": "https://example.com/image.jpg",
+  "placement": "homepage",
+  "ttl": 30
 }
 ```
 
 **Fields:**
-
 - `title` (required): Ad title
 - `image_url` (required): Image URL (must be valid URL)
 - `placement` (required): Ad placement
 - `ttl` (optional): Time to live in minutes (0 = no expiration)
 
 **Response (201):**
-
 ```json
 {
-"id": "uuid-generated",
-"title": "Test Ad",
-"imageUrl": "https://example.com/image.jpg",
-"placement": "homepage",
-"status": "active",
-"createdAt": 1640995200,
-"expiresAt": 1640997000
+  "id": "uuid-generated",
+  "title": "Test Ad",
+  "imageUrl": "https://example.com/image.jpg",
+  "placement": "homepage",
+  "status": "active",
+  "createdAt": 1640995200,
+  "expiresAt": 1640997000
 }
 ```
 
@@ -115,24 +191,22 @@ Creates a new ad with optional TTL.
 Gets a specific ad by its ID.
 
 **Response (200):**
-
 ```json
 {
-"id": "uuid-here",
-"title": "Test Ad",
-"imageUrl": "https://example.com/image.jpg",
-"placement": "homepage",
-"status": "active",
-"createdAt": 1640995200,
-"expiresAt": 1640997000
+  "id": "uuid-here",
+  "title": "Test Ad",
+  "imageUrl": "https://example.com/image.jpg",
+  "placement": "homepage",
+  "status": "active",
+  "createdAt": 1640995200,
+  "expiresAt": 1640997000
 }
 ```
 
 **Response (404):**
-
 ```json
 {
-"error": "Ad not found"
+  "error": "Ad not found"
 }
 ```
 
@@ -146,37 +220,34 @@ Gets ads filtered by specific criteria.
 - `status` (optional): Filter by status
 
 **Response (200):**
-
 ```json
 {
-"ads": [
-{
-"id": "uuid-1",
-"title": "Ad 1",
-"imageUrl": "https://example.com/image1.jpg",
-"placement": "homepage",
-"status": "active",
-"createdAt": 1640995200,
-"expiresAt": 1640997000
-}
-],
-"count": 1
+  "ads": [
+    {
+      "id": "uuid-1",
+      "title": "Ad 1",
+      "imageUrl": "https://example.com/image1.jpg",
+      "placement": "homepage",
+      "status": "active",
+      "createdAt": 1640995200,
+      "expiresAt": 1640997000
+    }
+  ],
+  "count": 1
 }
 ```
 
 ### 4. Deactivate Ad
-
 **POST** `/ads/{id}/deactivate`
 
 Deactivates a specific ad.
 
 **Response (200):**
-
 ```json
 {
-"message": "Ad deactivated successfully",
-"id": "uuid-here",
-"status": "inactive"
+  "message": "Ad deactivated successfully",
+  "id": "uuid-here",
+  "status": "inactive"
 }
 ```
 
@@ -188,14 +259,13 @@ Verifies service status.
 **Response (200):**
 ```json
 {
-"status": "running"
+  "status": "running"
 }
 ```
 
 ## 🗄️ Data Model
 
 ### AdvertiseRecord
-
 ```go
 type AdvertiseRecord struct {
 ID string `db:"id" json:"id"`
@@ -209,21 +279,18 @@ ExpiresAt *int64 `db:"expires_at" json:"expiresAt"`
 ```
 
 ### Ad States
-
 - `active`: Active and visible ad
 - `inactive`: Deactivated ad
 
 ## ⏰ TTL System
 
 ### Behavior
-
 - Ads can have a TTL (Time To Live) in minutes
 - If `ttl = 0` or not specified, the ad doesn't expire
 - Expired ads are automatically filtered out from queries
 - The `expiresAt` field is calculated as `createdAt + (ttl * 60 seconds)`
 
 ### Automatic Filtering
-
 All queries automatically discard expired ads:
 - Ads without TTL (`expiresAt = null`) are always shown
 - Ads with valid TTL (`expiresAt > currentTime`) are shown
@@ -261,30 +328,26 @@ make create-migration name=migration_name
 **Create ad:**
 ```bash
 curl -X POST http://localhost:9001/v1/ads \
--H "Content-Type: application/json" \
--d '{
-"title": "Test Ad",
-"image_url": "https://example.com/image.jpg",
-"placement": "homepage",
-"ttl": 30
-}'
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Test Ad",
+    "image_url": "https://example.com/image.jpg",
+    "placement": "homepage",
+    "ttl": 30
+  }'
 ```
 
 **Get ad by ID:**
-
 ```bash
 curl -X GET http://localhost:9001/v1/ads/your-uuid-here
 ```
 
 **Filter ads:**
-
 ```bash
 curl -X GET "http://localhost:9001/v1/ads?placement=homepage&status=active"
 ```
 
 **Deactivate ad:**
-
-
 ```bash
 curl -X POST http://localhost:9001/v1/ads/your-uuid-here/deactivate
 ```
@@ -317,20 +380,22 @@ admoai-takehome/
 ├── dev.env # Environment variables
 ├── go.mod # Dependencies
 ├── Makefile # Useful commands
+├── nixpacks.toml # Coolify deployment config
+├── Dockerfile # Docker deployment
+├── .dockerignore # Docker optimization
+├── coolify.env.example # Production env template
 └── README.md # This file
 ```
 
 ## 🔒 Validations
 
 ### Input Validations
-
 - **title**: Cannot be empty
 - **image_url**: Cannot be empty and must be valid URL
 - **placement**: Cannot be empty
 - **ttl**: Optional, must be greater than 0 if specified
 
 ### Business Validations
-
 - At least one filter must be present in filter queries
 - Expired ads are automatically discarded
 - Deactivated ads maintain their state
@@ -359,19 +424,16 @@ Expiration is automatically verified in each query through SQL filters that disc
 There's an important distinction between ad states:
 
 #### **Active (`status = 'active'`)**
-
 - Visible and functional ad
 - May or may not have TTL configured
 - Shown in queries if not expired
 
 #### **Inactive (`status = 'inactive'`)**
-
 - Manually deactivated ad by user
 - State change performed through `/ads/{id}/deactivate` endpoint
 - Not shown in queries regardless of TTL
 
 #### **Expired (`expires_at` column)**
-
 - Ad that has exceeded its configured lifetime
 - The `status` remains `active`, but is automatically filtered
 - Discarded in queries even though status is active
@@ -385,39 +447,36 @@ There's an important distinction between ad states:
 The implementation uses a decorator pattern with `HandleFunc` that provides several advantages:
 
 #### **Logic Abstraction**
-
 ```go
 func HandleFunc(handler func(*gin.Context, *Context) (any, int, error), ctx *Context) gin.HandlerFunc {
-return func(c *gin.Context) {
-// Common error handling and response logic
-result, status, err := handler(c, ctx)
-// Serialization and response
-}
+    return func(c *gin.Context) {
+        // Common error handling and response logic
+        result, status, err := handler(c, ctx)
+        // Serialization and response
+    }
 }
 ```
 
 #### **Testing Benefits**
-
 - **Separation of concerns**: Business logic is isolated from web framework
 - **Direct unit testing**: Handlers can be tested without HTTP server
 - **Simplified mocking**: Easy to mock dependencies (database, etc.)
 - **Clear assertions**: Can directly verify return values
 
 #### **Testing Example**
-
 ```go
 func TestPostAdsHandler(t *testing.T) {
-// Arrange
-mockDB := &MockDatabase{}
-ctx := &Context{Db: mockDB}
-
-// Act
-result, status, err := PostAdsHandler(ginContext, ctx)
-
-// Assert
-assert.Equal(t, http.StatusCreated, status)
-assert.Nil(t, err)
-// Verify result...
+    // Arrange
+    mockDB := &MockDatabase{}
+    ctx := &Context{Db: mockDB}
+    
+    // Act
+    result, status, err := PostAdsHandler(ginContext, ctx)
+    
+    // Assert
+    assert.Equal(t, http.StatusCreated, status)
+    assert.Nil(t, err)
+    // Verify result...
 }
 ```
 
@@ -435,7 +494,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 ### Identified Issues and Improvement Areas
 
 #### **1. Data Model Inconsistency**
-
 **Problem**: The separation between `status` (active/inactive) and `expires_at` can be confusing and error-prone.
 
 **Impact**:
@@ -449,7 +507,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Use database triggers to maintain consistency
 
 #### **2. Lack of Pagination**
-
 **Problem**: Filtering endpoints don't implement pagination.
 
 **Impact**:
@@ -463,7 +520,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Add pagination metadata in responses
 
 #### **3. Absence of Automated Tests**
-
 **Problem**: No unit tests or integration tests implemented.
 
 **Impact**:
@@ -477,7 +533,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Configure CI/CD with automatic validation
 
 #### **4. Inconsistent Error Handling**
-
 **Problem**: Errors don't follow a standard format and lack structured logging.
 
 **Impact**:
@@ -491,7 +546,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Create centralized error handling middleware
 
 #### **5. Lack of Business Validation**
-
 **Problem**: No business validations like TTL limits or placement validation.
 
 **Impact**:
@@ -505,7 +559,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Create centralized business validations
 
 #### **6. Absence of Metrics and Monitoring**
-
 **Problem**: No performance metrics or application monitoring.
 
 **Impact**:
@@ -519,7 +572,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Configure alerts for errors and latency
 
 #### **7. Lack of API Documentation**
-
 **Problem**: No OpenAPI/Swagger documentation.
 
 **Impact**:
@@ -533,7 +585,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Add usage examples in documentation
 
 #### **8. Hardcoded Configuration**
-
 **Problem**: Many values are hardcoded in the code.
 
 **Impact**:
@@ -547,7 +598,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Add configuration validation at startup
 
 #### **9. Lack of Rate Limiting**
-
 **Problem**: No protection against API abuse.
 
 **Impact**:
@@ -561,7 +611,6 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Configure request limits per minute
 
 #### **10. Absence of Backup and Recovery**
-
 **Problem**: No backup strategy for database.
 
 **Impact**:
