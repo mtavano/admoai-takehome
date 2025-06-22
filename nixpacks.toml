@@ -12,7 +12,7 @@ cmd = './admoai'
 
 [variables]
 GO_ENV = 'production'
-CGO_ENABLED = '0'
+CGO_ENABLED = '1'
 
 [deploy]
 startCommand = './admoai'
