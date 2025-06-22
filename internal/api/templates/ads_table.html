@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anuncios - Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-active {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .expired {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .image-preview {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        .no-data {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard de Anuncios</h1>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">{{.TotalAds}}</div>
+                <div class="stat-label">Total de Anuncios</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{.ActiveAds}}</div>
+                <div class="stat-label">Anuncios Activos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{.InactiveAds}}</div>
+                <div class="stat-label">Anuncios Inactivos</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{.ExpiredAds}}</div>
+                <div class="stat-label">Anuncios Expirados</div>
+            </div>
+        </div>
+
+        {{if .Ads}}
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Imagen</th>
+                    <th>Título</th>
+                    <th>Ubicación</th>
+                    <th>Estado</th>
+                    <th>Fecha de Creación</th>
+                    <th>Fecha de Expiración</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Ads}}
+                <tr>
+                    <td>{{.ID}}</td>
+                    <td>
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="Preview" class="image-preview">
+                        {{else}}
+                        <span style="color: #999;">Sin imagen</span>
+                        {{end}}
+                    </td>
+                    <td>{{.Title}}</td>
+                    <td>{{.Placement}}</td>
+                    <td>
+                        {{if eq .Status "active"}}
+                        <span class="status-active">Activo</span>
+                        {{else}}
+                        <span class="status-inactive">Inactivo</span>
+                        {{end}}
+                    </td>
+                    <td>{{formatTime .CreatedAt}}</td>
+                    <td>
+                        {{if .ExpiresAt}}
+                            {{if .Expired}}
+                            <span class="expired">Expirado</span>
+                            {{else}}
+                            {{formatTime .ExpiresAt}}
+                            {{end}}
+                        {{else}}
+                        <span style="color: #999;">Sin expiración</span>
+                        {{end}}
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+        <div class="no-data">
+            No hay anuncios disponibles
+        </div>
+        {{end}}
+    </div>
+</body>
+</html> 
