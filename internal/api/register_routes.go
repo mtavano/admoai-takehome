@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mtavano/admoai-takehome/internal/api/middleware"
 	"github.com/mtavano/admoai-takehome/internal/store"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Context struct {
@@ -27,10 +28,31 @@ func RegisterRoutes(ctx *Context, engine *gin.Engine) {
 		}, http.StatusOK, nil
 	}, ctx))
 
+	// Metrics endpoint for Prometheus
+	engine.GET("/metrics", HandleFunc(MetricsHandler, ctx))
+
 	v1Router := engine.Group("/v1")
 
 	v1Router.POST("/ads", HandleFunc(PostAdsHandler, ctx))
 	v1Router.GET("/ads/:id", HandleFunc(GetAdsByIDHandler, ctx))
 	v1Router.GET("/ads", HandleFunc(GetAdsByFiltersHandler, ctx))
 	v1Router.POST("/ads/:id/deactivate", HandleFunc(PostDeactivateAdsHandler, ctx))
+}
+
+// MetricsHandler handles the /metrics endpoint
+func MetricsHandler(c *gin.Context, ctx *Context) (any, int, error) {
+	// Update current ad counts from database
+	updateAdCounts(ctx)
+	
+	// Use Prometheus HTTP handler
+	promhttp.Handler().ServeHTTP(c.Writer, c.Request)
+	
+	// Return nil since promhttp.Handler handles the response
+	return nil, http.StatusOK, nil
+}
+
+// updateAdCounts fetches current ad counts from database
+func updateAdCounts(ctx *Context) {
+	// This will be implemented when we add the metrics package
+	// For now, we'll leave it empty since the metrics are handled by the Prometheus collector
 }

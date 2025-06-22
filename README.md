@@ -12,6 +12,8 @@ REST API for ad management with automatic TTL (Time To Live) system. Allows crea
 - **SQLite Database**: Local storage with automatic migrations
 - **Validations**: Input validation with Gin and golang validator
 - **Query Builder**: Use of Squirrel for dynamic and secure queries
+- **Metrics & Monitoring**: Prometheus-formatted metrics endpoint
+- **Alerting**: Simulated alerts for high active ad counts
 
 ## 🛠️ Technologies
 
@@ -261,6 +263,11 @@ Verifies service status.
 {
   "status": "running"
 }
+```
+
+### Metrics (Prometheus Format)
+```bash
+GET /metrics
 ```
 
 ## 🗄️ Data Model
@@ -622,3 +629,35 @@ This architecture facilitates robust unit test development and keeps code clean 
 - Implement automatic backups
 - Create recovery scripts
 - Document DR procedures
+
+### Current Strengths
+- ✅ Clean architecture with separation of concerns
+- ✅ Comprehensive input validation
+- ✅ Flexible filtering system
+- ✅ Automatic TTL expiration
+- ✅ Metrics and monitoring
+- ✅ Docker containerization
+- ✅ Database migrations
+- ✅ Comprehensive documentation
+
+### Areas for Improvement
+- 🔄 Add unit tests and integration tests
+- 🔄 Implement proper logging with structured logs
+- 🔄 Add rate limiting and authentication
+- 🔄 Implement caching layer
+- 🔄 Add database connection pooling
+- 🔄 Implement proper error handling with error codes
+- 🔄 Add API versioning strategy
+- 🔄 Implement proper health checks with database connectivity
+- 🔄 Add configuration management
+- 🔄 Implement proper graceful shutdown
+
+### Proposed Enhancements
+- 📈 Add Grafana dashboards
+- 📈 Implement real alerting system (email, Slack, etc.)
+- 📈 Add performance monitoring
+- 📈 Implement audit logging
+- 📈 Add backup and recovery procedures
+- 📈 Implement horizontal scaling strategy
+- 📈 Add API documentation with Swagger/OpenAPI
+- 📈 Implement proper CI/CD pipeline

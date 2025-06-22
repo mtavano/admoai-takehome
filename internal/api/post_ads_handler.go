@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/mtavano/admoai-takehome/internal/metrics"
 	"github.com/mtavano/admoai-takehome/internal/store"
 	"github.com/mtavano/admoai-takehome/internal/store/query"
 	"github.com/pkg/errors"
@@ -60,6 +61,12 @@ func PostAdsHandler(c *gin.Context, ctx *Context) (any, int, error) {
 	err := query.InsertAds(ctx.Db, rec)
 	if err != nil {
 		return nil, http.StatusInternalServerError, errors.Wrap(err, "api: PostAdsHandlerRequest error")
+	}
+
+	// Increment metrics for ad creation
+	collector := metrics.GetCollector()
+	if collector != nil {
+		collector.IncrementAdCreated()
 	}
 
 	return rec, http.StatusCreated, nil

@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mtavano/admoai-takehome/internal/metrics"
 	"github.com/mtavano/admoai-takehome/internal/store"
 	"github.com/mtavano/admoai-takehome/internal/store/query"
 	"github.com/pkg/errors"
@@ -31,6 +32,12 @@ func PostDeactivateAdsHandler(c *gin.Context, ctx *Context) (any, int, error) {
 	err := query.UpdateAds(ctx.Db, args)
 	if err != nil {
 		return nil, http.StatusInternalServerError, errors.Wrap(err, "api: PostDeactivateAdsHandler update error")
+	}
+
+	// Increment metrics for ad deactivation
+	collector := metrics.GetCollector()
+	if collector != nil {
+		collector.IncrementAdDeactivated()
 	}
 
 	return gin.H{

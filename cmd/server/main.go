@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mtavano/admoai-takehome/internal/api"
+	"github.com/mtavano/admoai-takehome/internal/metrics"
 	"github.com/mtavano/admoai-takehome/internal/store"
 	_ "github.com/mtavano/admoai-takehome/migrations"
 	"github.com/pressly/goose/v3"
@@ -16,6 +17,9 @@ import (
 
 func main() {
 	fmt.Println("admoai-take-home-test initialization")
+
+	// Initialize metrics collector
+	metrics.Init()
 
 	// Initialize database
 	dbDriver := os.Getenv("DB_DRIVER")
