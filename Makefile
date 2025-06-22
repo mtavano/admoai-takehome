@@ -20,10 +20,6 @@ migrate:
 	@echo "[migrate] Running database migrations..."
 	@export $$(cat dev.env) && goose -dir=migrations/ -driver=sqlite3 -dsn=./data/admoai.db up
 
-migrate-down:
-	@echo "[migrate-down] Rolling back database migrations..."
-	@export $$(cat dev.env) && goose -dir=migrations/ -driver=sqlite3 -dsn=./data/admoai.db down
-
 clean:
 	@echo "[clean] Cleaning up database files..."
 	@rm -rf ./data

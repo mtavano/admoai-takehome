@@ -1,63 +1,63 @@
-# AdMoai Take Home Test - API de Anuncios
+# AdMoai Take Home Test - Ads API
 
-## 📋 Descripción
+## 📋 Description
 
-API REST para gestión de anuncios con sistema de TTL (Time To Live) automático. Permite crear, consultar y gestionar anuncios con expiración automática basada en tiempo.
+REST API for ad management with automatic TTL (Time To Live) system. Allows creating, querying and managing ads with automatic time-based expiration.
 
-## 🚀 Características
+## 🚀 Features
 
-- **CRUD de Anuncios**: Crear, consultar y actualizar anuncios
-- **Sistema TTL**: Expiración automática de anuncios basada en minutos
-- **Filtros Avanzados**: Consulta por placement, status y otros criterios
-- **Base de Datos SQLite**: Almacenamiento local con migraciones automáticas
-- **Validaciones**: Validación de entrada con Gin y golang validator
-- **Query Builder**: Uso de Squirrel para queries dinámicas y seguras
+- **CRUD Operations**: Create, read, update and delete ads
+- **TTL System**: Automatic ad expiration based on minutes
+- **Advanced Filters**: Query by placement, status and other criteria
+- **SQLite Database**: Local storage with automatic migrations
+- **Validations**: Input validation with Gin and golang validator
+- **Query Builder**: Use of Squirrel for dynamic and secure queries
 
-## 🛠️ Tecnologías
+## 🛠️ Technologies
 
 - **Go 1.23.4**
-- **Gin** - Framework web
-- **SQLite** - Base de datos
+- **Gin** - Web framework
+- **SQLite** - Database
 - **Squirrel** - Query builder
-- **Goose** - Migraciones de base de datos
-- **Golang Validator** - Validación de datos
+- **Goose** - Database migrations
+- **Golang Validator** - Data validation
 
-## 📦 Instalación
+## 📦 Installation
 
-### Prerrequisitos
-- Go 1.23.4 o superior
+### Prerequisites
+- Go 1.23.4 or higher
 - SQLite3
 
-### Configuración
-1. Clonar el repositorio:
+### Setup
+1. Clone the repository:
 ```bash
 git clone <repository-url>
 cd admoai-takehome
 ```
 
-2. Instalar dependencias:
+2. Install dependencies:
 ```bash
 go mod tidy
 ```
 
-3. Configurar variables de entorno:
+3. Configure environment variables:
 ```bash
 cp example.dev.env dev.env
 ```
 
-4. Ejecutar migraciones:
+4. Run migrations:
 ```bash
 make setup
 ```
 
-5. Iniciar el servidor:
+5. Start the server:
 ```bash
 make run-simple
 ```
 
-## 🔧 Configuración
+## 🔧 Configuration
 
-### Variables de Entorno (`dev.env`)
+### Environment Variables (`dev.env`)
 ```env
 ENVIRONMENT=dev
 API_PORT=9001
@@ -72,58 +72,59 @@ DB_DSN=./data/admoai.db
 http://localhost:9001/v1
 ```
 
-### 1. Crear Anuncio
+### 1. Create Ad
 **POST** `/ads`
 
-Crea un nuevo anuncio con TTL opcional.
+Creates a new ad with optional TTL.
 
 **Request Body:**
 
 ```json
 {
-  "title": "Anuncio de Prueba",
-  "image_url": "https://example.com/image.jpg",
-  "placement": "homepage",
-  "ttl": 30
+"title": "Test Ad",
+"image_url": "https://example.com/image.jpg",
+"placement": "homepage",
+"ttl": 30
 }
 ```
 
-**Campos:**
-- `title` (required): Título del anuncio
-- `image_url` (required): URL de la imagen (debe ser URL válida)
-- `placement` (required): Ubicación del anuncio
-- `ttl` (optional): Tiempo de vida en minutos (0 = sin expiración)
+**Fields:**
+
+- `title` (required): Ad title
+- `image_url` (required): Image URL (must be valid URL)
+- `placement` (required): Ad placement
+- `ttl` (optional): Time to live in minutes (0 = no expiration)
 
 **Response (201):**
 
 ```json
 {
-  "id": "uuid-generated",
-  "title": "Anuncio de Prueba",
-  "imageUrl": "https://example.com/image.jpg",
-  "placement": "homepage",
-  "status": "active",
-  "createdAt": 1640995200,
-  "expiresAt": 1640997000
+"id": "uuid-generated",
+"title": "Test Ad",
+"imageUrl": "https://example.com/image.jpg",
+"placement": "homepage",
+"status": "active",
+"createdAt": 1640995200,
+"expiresAt": 1640997000
 }
 ```
 
-### 2. Obtener Anuncio por ID
+### 2. Get Ad by ID
 **GET** `/ads/{id}`
 
-Obtiene un anuncio específico por su ID.
+Gets a specific ad by its ID.
 
 **Response (200):**
 
 ```json
 {
-  "id": "uuid-here",
-  "title": "Anuncio de Prueba",
-  "imageUrl": "https://example.com/image.jpg",
-  "placement": "homepage",
-  "status": "active",
-  "createdAt": 1640995200,
-  "expiresAt": 1640997000
+"id": "uuid-here",
+"title": "Test Ad",
+"imageUrl": "https://example.com/image.jpg",
+"placement": "homepage",
+"status": "active",
+"createdAt": 1640995200,
+"expiresAt": 1640997000
 }
 ```
 
@@ -131,218 +132,444 @@ Obtiene un anuncio específico por su ID.
 
 ```json
 {
-  "error": "Ad not found"
+"error": "Ad not found"
 }
 ```
 
-### 3. Filtrar Anuncios
+### 3. Filter Ads
 **GET** `/ads?placement=homepage&status=active`
 
-Obtiene anuncios filtrados por criterios específicos.
+Gets ads filtered by specific criteria.
 
 **Query Parameters:**
-- `placement` (optional): Filtrar por ubicación
-- `status` (optional): Filtrar por estado
+- `placement` (optional): Filter by placement
+- `status` (optional): Filter by status
 
 **Response (200):**
 
 ```json
 {
-  "ads": [
-    {
-      "id": "uuid-1",
-      "title": "Anuncio 1",
-      "imageUrl": "https://example.com/image1.jpg",
-      "placement": "homepage",
-      "status": "active",
-      "createdAt": 1640995200,
-      "expiresAt": 1640997000
-    }
-  ],
-  "count": 1
+"ads": [
+{
+"id": "uuid-1",
+"title": "Ad 1",
+"imageUrl": "https://example.com/image1.jpg",
+"placement": "homepage",
+"status": "active",
+"createdAt": 1640995200,
+"expiresAt": 1640997000
+}
+],
+"count": 1
 }
 ```
 
-### 4. Desactivar Anuncio
+### 4. Deactivate Ad
+
 **POST** `/ads/{id}/deactivate`
 
-Desactiva un anuncio específico.
+Deactivates a specific ad.
 
 **Response (200):**
 
 ```json
 {
-  "message": "Ad deactivated successfully",
-  "id": "uuid-here",
-  "status": "inactive"
+"message": "Ad deactivated successfully",
+"id": "uuid-here",
+"status": "inactive"
 }
 ```
 
 ### 5. Health Check
 **GET** `/health`
 
-Verifica el estado del servicio.
+Verifies service status.
 
 **Response (200):**
-
 ```json
 {
-  "status": "running"
+"status": "running"
 }
 ```
 
-## 🗄️ Modelo de Datos
+## 🗄️ Data Model
 
 ### AdvertiseRecord
 
 ```go
 type AdvertiseRecord struct {
-    ID        string  `db:"id" json:"id"`
-    Title     string  `db:"title" json:"title"`
-    ImageURL  string  `db:"image_url" json:"imageUrl"`
-    Placement string  `db:"placement" json:"placement"`
-    Status    string  `db:"status" json:"status"`
-    CreatedAt int64   `db:"created_at" json:"createdAt"`
-    ExpiresAt *int64  `db:"expires_at" json:"expiresAt"`
+ID string `db:"id" json:"id"`
+Title string `db:"title" json:"title"`
+ImageURL string `db:"image_url" json:"imageUrl"`
+Placement string `db:"placement" json:"placement"`
+Status string `db:"status" json:"status"`
+CreatedAt int64 `db:"created_at" json:"createdAt"`
+ExpiresAt *int64 `db:"expires_at" json:"expiresAt"`
 }
 ```
 
-### Estados del Anuncio
+### Ad States
 
-- `active`: Anuncio activo y visible
-- `inactive`: Anuncio desactivado
+- `active`: Active and visible ad
+- `inactive`: Deactivated ad
 
-## ⏰ Sistema TTL
+## ⏰ TTL System
 
-### Comportamiento
+### Behavior
 
-- Los anuncios pueden tener un TTL (Time To Live) en minutos
-- Si `ttl = 0` o no se especifica, el anuncio no expira
-- Los anuncios expirados se filtran automáticamente de las consultas
-- El campo `expiresAt` se calcula como `createdAt + (ttl * 60 segundos)`
+- Ads can have a TTL (Time To Live) in minutes
+- If `ttl = 0` or not specified, the ad doesn't expire
+- Expired ads are automatically filtered out from queries
+- The `expiresAt` field is calculated as `createdAt + (ttl * 60 seconds)`
 
-### Filtrado Automático
+### Automatic Filtering
 
-Todas las consultas automáticamente descartan anuncios expirados:
-- Anuncios sin TTL (`expiresAt = null`) se muestran siempre
-- Anuncios con TTL válido (`expiresAt > currentTime`) se muestran
-- Anuncios expirados (`expiresAt <= currentTime`) se descartan
+All queries automatically discard expired ads:
+- Ads without TTL (`expiresAt = null`) are always shown
+- Ads with valid TTL (`expiresAt > currentTime`) are shown
+- Expired ads (`expiresAt <= currentTime`) are discarded
 
-## 🛠️ Comandos Make
+## 🛠️ Make Commands
 
 ```bash
-# Configuración inicial
+# Initial setup
 make setup
 
-# Ejecutar servidor con hot reload
+# Run server with hot reload
 make run
 
-# Ejecutar servidor simple
+# Run simple server
 make run-simple
 
-# Ejecutar migraciones
+# Run migrations
 make migrate
 
-# Revertir migraciones
+# Rollback migrations
 make migrate-down
 
-# Limpiar base de datos
+# Clean database
 make clean
 
-# Crear nueva migración
+# Create new migration
 make create-migration name=migration_name
 ```
 
 ## 🧪 Functional Testing
 
-### Ejemplos de uso con curl
+### Usage examples with curl
 
-**Crear anuncio:**
-
+**Create ad:**
 ```bash
 curl -X POST http://localhost:9001/v1/ads \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "Anuncio de Prueba",
-    "image_url": "https://example.com/image.jpg",
-    "placement": "homepage",
-    "ttl": 30
-  }'
+-H "Content-Type: application/json" \
+-d '{
+"title": "Test Ad",
+"image_url": "https://example.com/image.jpg",
+"placement": "homepage",
+"ttl": 30
+}'
 ```
 
-**Obtener anuncio por ID:**
+**Get ad by ID:**
 
 ```bash
 curl -X GET http://localhost:9001/v1/ads/your-uuid-here
 ```
 
-**Filtrar anuncios:**
+**Filter ads:**
 
 ```bash
 curl -X GET "http://localhost:9001/v1/ads?placement=homepage&status=active"
 ```
 
-**Desactivar anuncio:**
+**Deactivate ad:**
+
 
 ```bash
 curl -X POST http://localhost:9001/v1/ads/your-uuid-here/deactivate
 ```
 
-## 📁 Estructura del Proyecto
+## 📁 Project Structure
 
 ```
 admoai-takehome/
 ├── cmd/
-│   └── server/
-│       └── main.go              # Punto de entrada
+│ └── server/
+│ └── main.go # Entry point
 ├── internal/
-│   ├── api/                     # Handlers de la API
-│   │   ├── handle_func.go
-│   │   ├── post_ads_handler.go
-│   │   ├── get_ads_by_id.go
-│   │   ├── get_ads_by_filters_handler.go
-│   │   ├── post_deactivate_ads_handler.go
-│   │   └── register_routes.go
-│   └── store/                   # Capa de datos
-│       ├── database.go
-│       ├── implementation.go
-│       ├── models.go
-│       └── query/
-│           ├── insert_ads.go
-│           ├── select_ads.go
-│           └── update_ads.go
-├── migrations/                  # Migraciones de BD
-│   └── 20250622182727_init_setup.go
-├── dev.env                      # Variables de entorno
-├── go.mod                       # Dependencias
-├── Makefile                     # Comandos útiles
-└── README.md                    # Este archivo
+│ ├── api/ # API handlers
+│ │ ├── handle_func.go
+│ │ ├── post_ads_handler.go
+│ │ ├── get_ads_by_id.go
+│ │ ├── get_ads_by_filters_handler.go
+│ │ ├── post_deactivate_ads_handler.go
+│ │ └── register_routes.go
+│ └── store/ # Data layer
+│ ├── database.go
+│ ├── implementation.go
+│ ├── models.go
+│ └── query/
+│ ├── insert_ads.go
+│ ├── select_ads.go
+│ └── update_ads.go
+├── migrations/ # Database migrations
+│ └── 20250622182727_init_setup.go
+├── dev.env # Environment variables
+├── go.mod # Dependencies
+├── Makefile # Useful commands
+└── README.md # This file
 ```
 
-## 🔒 Validaciones
+## 🔒 Validations
 
-### Validaciones de Entrada
+### Input Validations
 
-- **title**: No puede estar vacío
-- **image_url**: No puede estar vacío y debe ser URL válida
-- **placement**: No puede estar vacío
-- **ttl**: Opcional, debe ser mayor a 0 si se especifica
+- **title**: Cannot be empty
+- **image_url**: Cannot be empty and must be valid URL
+- **placement**: Cannot be empty
+- **ttl**: Optional, must be greater than 0 if specified
 
-### Validaciones de Negocio
+### Business Validations
 
-- Al menos un filtro debe estar presente en consultas por filtros
-- Los anuncios expirados se descartan automáticamente
-- Los anuncios desactivados mantienen su estado
+- At least one filter must be present in filter queries
+- Expired ads are automatically discarded
+- Deactivated ads maintain their state
 
-## 🚨 Códigos de Error
+## 🚨 Error Codes
 
-- **400 Bad Request**: Datos de entrada inválidos
-- **404 Not Found**: Recurso no encontrado
-- **500 Internal Server Error**: Error interno del servidor
+- **400 Bad Request**: Invalid input data
+- **404 Not Found**: Resource not found
+- **500 Internal Server Error**: Internal server error
 
-## 📝 Notas de Desarrollo
+## 🏗️ Implementation Details
 
-- La API usa SQLite para simplicidad de desarrollo
-- Todas las queries usan Squirrel para prevenir SQL injection
-- Los timestamps se manejan como Unix timestamps (int64)
-- El sistema es idempotente para operaciones de desactivación 
+### Runtime Expiration System
+
+The expiration system works **at runtime** instead of using a cronjob. This architectural decision was made to:
+
+- **Minimize synchronization issues**: Avoid inconsistencies between multiple application instances
+- **Operational simplicity**: No need to manage scheduled jobs
+- **Scalability**: Each request handles its own expiration logic
+- **Consistency**: Data is always up to date at query time
+
+Expiration is automatically verified in each query through SQL filters that discard expired records based on the `expires_at` field.
+
+### Ad States: Active, Inactive and Expired
+
+There's an important distinction between ad states:
+
+#### **Active (`status = 'active'`)**
+
+- Visible and functional ad
+- May or may not have TTL configured
+- Shown in queries if not expired
+
+#### **Inactive (`status = 'inactive'`)**
+
+- Manually deactivated ad by user
+- State change performed through `/ads/{id}/deactivate` endpoint
+- Not shown in queries regardless of TTL
+
+#### **Expired (`expires_at` column)**
+
+- Ad that has exceeded its configured lifetime
+- The `status` remains `active`, but is automatically filtered
+- Discarded in queries even though status is active
+
+**Result for Frontend**: Both `inactive` and `expired` ads are not shown, but at data level they represent different concepts:
+- **Inactive**: Manual deactivation (reversible)
+- **Expired**: Automatic expiration by TTL (irreversible)
+
+### HandleFunc as Decorator for Testing
+
+The implementation uses a decorator pattern with `HandleFunc` that provides several advantages:
+
+#### **Logic Abstraction**
+
+```go
+func HandleFunc(handler func(*gin.Context, *Context) (any, int, error), ctx *Context) gin.HandlerFunc {
+return func(c *gin.Context) {
+// Common error handling and response logic
+result, status, err := handler(c, ctx)
+// Serialization and response
+}
+}
+```
+
+#### **Testing Benefits**
+
+- **Separation of concerns**: Business logic is isolated from web framework
+- **Direct unit testing**: Handlers can be tested without HTTP server
+- **Simplified mocking**: Easy to mock dependencies (database, etc.)
+- **Clear assertions**: Can directly verify return values
+
+#### **Testing Example**
+
+```go
+func TestPostAdsHandler(t *testing.T) {
+// Arrange
+mockDB := &MockDatabase{}
+ctx := &Context{Db: mockDB}
+
+// Act
+result, status, err := PostAdsHandler(ginContext, ctx)
+
+// Assert
+assert.Equal(t, http.StatusCreated, status)
+assert.Nil(t, err)
+// Verify result...
+}
+```
+
+This architecture facilitates robust unit test development and keeps code clean and maintainable.
+
+## 📝 Development Notes
+
+- API uses SQLite for development simplicity
+- All queries use Squirrel to prevent SQL injection
+- Timestamps are handled as Unix timestamps (int64)
+- System is idempotent for deactivation operations
+
+## ⚠️ Postmortem
+
+### Identified Issues and Improvement Areas
+
+#### **1. Data Model Inconsistency**
+
+**Problem**: The separation between `status` (active/inactive) and `expires_at` can be confusing and error-prone.
+
+**Impact**:
+- Clients must understand two different concepts to determine if an ad is "active"
+- Easy to forget applying expiration filter in new queries
+- Can generate inconsistencies if filtering method is not always called
+
+**Proposed Solution**:
+- Implement a calculated field `is_visible` that combines both states
+- Create a `CalculateAndSetExpired()` method that automatically updates status
+- Use database triggers to maintain consistency
+
+#### **2. Lack of Pagination**
+
+**Problem**: Filtering endpoints don't implement pagination.
+
+**Impact**:
+- Can cause performance issues with large data volumes
+- No control over response size
+- Difficult to implement infinite scroll in frontend
+
+**Proposed Solution**:
+- Add `limit` and `offset` parameters to filtering endpoints
+- Implement cursor-based pagination for better performance
+- Add pagination metadata in responses
+
+#### **3. Absence of Automated Tests**
+
+**Problem**: No unit tests or integration tests implemented.
+
+**Impact**:
+- Difficult to detect regressions
+- No automatic validation of changes
+- Higher risk in deployments
+
+**Proposed Solution**:
+- Implement unit tests for all handlers
+- Add integration tests for database
+- Configure CI/CD with automatic validation
+
+#### **4. Inconsistent Error Handling**
+
+**Problem**: Errors don't follow a standard format and lack structured logging.
+
+**Impact**:
+- Difficult debugging in production
+- Clients receive uninformative error messages
+- No error traceability
+
+**Proposed Solution**:
+- Implement standard error code system
+- Add structured logging with levels
+- Create centralized error handling middleware
+
+#### **5. Lack of Business Validation**
+
+**Problem**: No business validations like TTL limits or placement validation.
+
+**Impact**:
+- Can create ads with extreme TTLs (e.g., 100 years)
+- No control over valid placement values
+- Difficult to maintain data consistency
+
+**Proposed Solution**:
+- Add range validations for TTL (e.g., 1 minute - 1 year)
+- Implement enum of valid placements
+- Create centralized business validations
+
+#### **6. Absence of Metrics and Monitoring**
+
+**Problem**: No performance metrics or application monitoring.
+
+**Impact**:
+- Cannot detect performance issues
+- Difficult to identify bottlenecks
+- No automatic alerts
+
+**Proposed Solution**:
+- Implement Prometheus metrics
+- Add detailed health checks
+- Configure alerts for errors and latency
+
+#### **7. Lack of API Documentation**
+
+**Problem**: No OpenAPI/Swagger documentation.
+
+**Impact**:
+- Difficult for other developers to integrate with API
+- No automatic request/response validation
+- Lack of autocomplete in IDEs
+
+**Proposed Solution**:
+- Generate OpenAPI documentation automatically
+- Implement schema validation
+- Add usage examples in documentation
+
+#### **8. Hardcoded Configuration**
+
+**Problem**: Many values are hardcoded in the code.
+
+**Impact**:
+- Difficult configuration per environment
+- No flexibility for different deployments
+- Difficult testing with different configurations
+
+**Proposed Solution**:
+- Move configurations to environment variables
+- Implement environment-based configuration system
+- Add configuration validation at startup
+
+#### **9. Lack of Rate Limiting**
+
+**Problem**: No protection against API abuse.
+
+**Impact**:
+- Vulnerable to DoS attacks
+- A client can saturate the system
+- No usage control per client
+
+**Proposed Solution**:
+- Implement rate limiting per IP/client
+- Add authentication and authorization
+- Configure request limits per minute
+
+#### **10. Absence of Backup and Recovery**
+
+**Problem**: No backup strategy for database.
+
+**Impact**:
+- Data loss in case of failure
+- No disaster recovery
+- Difficult data migration
+
+**Proposed Solution**:
+- Implement automatic backups
+- Create recovery scripts
+- Document DR procedures
