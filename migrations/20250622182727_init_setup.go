@@ -21,7 +21,7 @@ func upInitSetup(ctx context.Context, tx *sql.Tx) error {
 			placement TEXT NOT NULL,
 			status TEXT NOT NULL DEFAULT 'active',
 			created_at INTEGER NOT NULL,
-			ttl integer
+			expires_at INTEGER
 		);
 	`)
 
