@@ -31,4 +31,5 @@ func RegisterRoutes(ctx *Context, engine *gin.Engine) {
 
 	v1Router.POST("/ads", HandleFunc(PostAdsHandler, ctx))
 	v1Router.GET("/ads/:id", HandleFunc(GetAdsByIDHandler, ctx))
+	v1Router.GET("/ads", HandleFunc(GetAdsByFiltersHandler, ctx))
 }
